@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#ffffff"/>
+  <text x="50" y="40" font-size="24" font-family="Arial" fill="#333">Youth Account Management Sequence Diagram</text>
+  <text x="50" y="80" font-size="18" font-family="Arial" fill="#333">Actors: Parent, Banking Web App, API Gateway, Youth Account Service, Account Service, Transaction Service, Payment Service</text>
+  <line x1="50" y1="120" x2="750" y2="120" stroke="#aaa" stroke-width="2"/>
+  <text x="60" y="150" font-size="16" font-family="Arial" fill="#333">Parent logs in (OAuth2) → Banking Web App</text>
+  <text x="60" y="180" font-size="16" font-family="Arial" fill="#333">Banking Web App → API Gateway: /api/youth-accounts/{youthAccountId}/dashboard [GET]</text>
+  <text x="60" y="210" font-size="16" font-family="Arial" fill="#333">API Gateway → Youth Account Service: Validate RBAC, Audit log</text>
+  <text x="60" y="240" font-size="16" font-family="Arial" fill="#333">Youth Account Service → Account Service: Retrieve account balance</text>
+  <text x="60" y="270" font-size="16" font-family="Arial" fill="#333">Youth Account Service → Transaction Service: Retrieve recent transactions</text>
+  <text x="60" y="300" font-size="16" font-family="Arial" fill="#333">Youth Account Service → API Gateway: Compose dashboard response</text>
+  <text x="60" y="330" font-size="16" font-family="Arial" fill="#333">API Gateway → Banking Web App: Return dashboard data</text>
+  <line x1="50" y1="350" x2="750" y2="350" stroke="#aaa" stroke-width="2"/>
+  <text x="60" y="380" font-size="16" font-family="Arial" fill="#333">Parent initiates fund transfer → Banking Web App</text>
+  <text x="60" y="410" font-size="16" font-family="Arial" fill="#333">Banking Web App → API Gateway: /api/youth-accounts/{youthAccountId}/fund-transfer [POST]</text>
+  <text x="60" y="440" font-size="16" font-family="Arial" fill="#333">API Gateway → Youth Account Service: Validate RBAC, Audit log</text>
+  <text x="60" y="470" font-size="16" font-family="Arial" fill="#333">Youth Account Service → Payment Service: Execute fund transfer</text>
+  <text x="60" y="500" font-size="16" font-family="Arial" fill="#333">Youth Account Service → Account Service: Update balance</text>
+  <text x="60" y="530" font-size="16" font-family="Arial" fill="#333">Youth Account Service → API Gateway: Return transfer confirmation</text>
+  <text x="60" y="560" font-size="16" font-family="Arial" fill="#333">API Gateway → Banking Web App: Show updated balance</text>
+</svg>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#ffffff"/>
+  <text x="50" y="40" font-size="24" font-family="Arial" fill="#333">Youth Account Management Component Diagram</text>
+  <rect x="100" y="100" width="200" height="80" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+  <text x="130" y="140" font-size="18" font-family="Arial" fill="#333">Banking Web App</text>
+  <rect x="350" y="100" width="200" height="80" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+  <text x="380" y="140" font-size="18" font-family="Arial" fill="#333">API Gateway</text>
+  <rect x="600" y="100" width="150" height="80" fill="#e0e0e0" stroke="#333" stroke-width="2"/>
+  <text x="620" y="140" font-size="18" font-family="Arial" fill="#333">Youth Account Service</text>
+  <rect x="100" y="250" width="200" height="80" fill="#f0f0ff" stroke="#333" stroke-width="2"/>
+  <text x="130" y="290" font-size="16" font-family="Arial" fill="#333">Account Service</text>
+  <rect x="350" y="250" width="200" height="80" fill="#f0f0ff" stroke="#333" stroke-width="2"/>
+  <text x="380" y="290" font-size="16" font-family="Arial" fill="#333">Transaction Service</text>
+  <rect x="600" y="250" width="150" height="80" fill="#f0f0ff" stroke="#333" stroke-width="2"/>
+  <text x="620" y="290" font-size="16" font-family="Arial" fill="#333">Payment Service</text>
+  <line x1="200" y1="180" x2="450" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="450" y1="180" x2="675" y2="180" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="675" y1="180" x2="675" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="675" y1="250" x2="200" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="675" y1="250" x2="450" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="675" y1="250" x2="675" y2="330" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 10,5 0,10" fill="#333" />
+    </marker>
+  </defs>
+</svg>
