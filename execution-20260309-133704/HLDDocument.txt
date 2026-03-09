@@ -1,0 +1,6 @@
+HIGH LEVEL DESIGN:
+- Frontend: React.js
+- Backend: FastAPI (Python)
+- Database: PostgreSQL with RDS
+- Caching: Redis for session management
+- Infrastructure: AWS EKS (Kubernetes)
