@@ -1,0 +1,60 @@
+Non-Functional Requirements (NFRs)
+
+Security:
+- OAuth2 authentication
+- RBAC enforcement
+- Input validation
+- Output filtering
+- Audit logging
+- Data encryption at rest and in transit
+
+Compliance:
+- GDPR
+- PCI-DSS
+- ISO 27001
+
+Performance:
+- API response time <500ms for dashboard
+- Transaction API <700ms for 95% of requests
+
+Scalability:
+- Horizontal scaling supported
+- Stateless APIs
+
+Availability:
+- 99.99% uptime SLA
+
+Reliability:
+- Automatic failover
+- Transaction integrity
+
+Maintainability:
+- Modular microservice architecture
+- OpenAPI documentation
+- Clear codebase separation
+
+Auditability:
+- All fund transfers and spending limit changes logged
+
+Disaster Recovery:
+- RTO < 4 hours
+- RPO < 1 hour
+
+Backup:
+- Daily backups, encrypted
+
+Monitoring:
+- Real-time metrics (API latency, error rates)
+- Alerting for failures and threshold breaches
+
+Logging:
+- Centralized log aggregation
+- Error and audit logs
+
+RBAC:
+- Role-based access control enforced at API layer
+
+Enterprise Controls:
+- Input validation, output filtering
+- Audit logging
+- RBAC
