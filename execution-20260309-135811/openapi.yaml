@@ -1,0 +1,294 @@
+openapi: 3.0.3
+info:
+  title: Youth Account Management API
+  description: API for managing youth accounts, fund transfers, spending limits, and transaction history.
+  version: 1.0.0
+  contact:
+    name: SCIB Team
+    email: scib-team@example.com
+  termsOfService: https://ascend-krithi.com/terms
+servers:
+  - url: https://api.ascend-krithi.com
+    description: Production server
+  - url: https://staging.api.ascend-krithi.com
+    description: Staging server
+security:
+  - OAuth2: []
+paths:
+  /api/youth-accounts/{youthAccountId}/dashboard:
+    get:
+      summary: Retrieve youth account dashboard
+      description: Get youth account balance, spending limit, and recent transactions.
+      operationId: getYouthAccountDashboard
+      parameters:
+        - name: youthAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the youth account
+      responses:
+        '200':
+          description: Youth account dashboard retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/YouthAccountDashboardResponse'
+        '403':
+          description: Unauthorized (ownership/OAuth failure)
+        '500':
+          description: Internal Server Error
+      security:
+        - OAuth2: []
+      tags:
+        - Dashboard
+  /api/youth-accounts/{youthAccountId}/fund-transfer:
+    post:
+      summary: Transfer funds from parent to youth account
+      description: Initiate a fund transfer to the youth account.
+      operationId: fundTransferToYouthAccount
+      parameters:
+        - name: youthAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the youth account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundTransferRequest'
+      responses:
+        '200':
+          description: Fund transfer successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FundTransferResponse'
+        '400':
+          description: Bad Request (Insufficient funds, invalid account mapping)
+        '502':
+          description: Transfer service failure
+      security:
+        - OAuth2: []
+      tags:
+        - FundTransfer
+  /api/youth-accounts/{youthAccountId}/spending-limit:
+    put:
+      summary: Set weekly spending limit
+      description: Configure weekly spending limit for a youth account.
+      operationId: setWeeklySpendingLimit
+      parameters:
+        - name: youthAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the youth account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpendingLimitRequest'
+      responses:
+        '200':
+          description: Spending limit updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpendingLimitResponse'
+        '400':
+          description: Validation error (invalid values)
+        '403':
+          description: Unauthorized
+      security:
+        - OAuth2: []
+      tags:
+        - SpendingLimit
+  /api/youth-accounts/{youthAccountId}/transactions:
+    get:
+      summary: Retrieve youth account transaction history
+      description: Get transaction history for a youth account.
+      operationId: getYouthAccountTransactions
+      parameters:
+        - name: youthAccountId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique ID of the youth account
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Start date for transaction history
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: End date for transaction history
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+          description: Page number for pagination
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Number of records per page
+      responses:
+        '200':
+          description: Transaction history retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionHistoryResponse'
+        '403':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+      security:
+        - OAuth2: []
+      tags:
+        - Transactions
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://auth.ascend-krithi.com/oauth2/authorize
+          tokenUrl: https://auth.ascend-krithi.com/oauth2/token
+          scopes:
+            youth-account: Access youth account APIs
+            fund-transfer: Transfer funds
+            spending-limit: Set spending limits
+            transaction-history: View transactions
+  schemas:
+    YouthAccountDashboardResponse:
+      type: object
+      properties:
+        youthAccountId:
+          type: string
+        accountBalance:
+          type: number
+          format: double
+        spendingLimit:
+          type: number
+          format: double
+        currency:
+          type: string
+        recentTransactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardTransaction'
+    DashboardTransaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        amount:
+          type: number
+          format: double
+    FundTransferRequest:
+      type: object
+      required:
+        - sourceAccountId
+        - transferAmount
+        - currency
+      properties:
+        sourceAccountId:
+          type: string
+        transferAmount:
+          type: number
+          format: double
+        currency:
+          type: string
+    FundTransferResponse:
+      type: object
+      properties:
+        transferId:
+          type: string
+        status:
+          type: string
+          enum:
+            - SUCCESS
+            - FAILED
+        updatedBalance:
+          type: number
+          format: double
+    SpendingLimitRequest:
+      type: object
+      required:
+        - weeklyLimit
+      properties:
+        weeklyLimit:
+          type: number
+          format: double
+    SpendingLimitResponse:
+      type: object
+      properties:
+        youthAccountId:
+          type: string
+        weeklyLimit:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - UPDATED
+            - FAILED
+    TransactionHistoryResponse:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Transaction:
+      type: object
+      properties:
+        transactionId:
+          type: string
+        date:
+          type: string
+          format: date-time
+        merchant:
+          type: string
+        amount:
+          type: number
+          format: double
+        transactionType:
+          type: string
+          enum:
+            - debit
+            - credit
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalRecords:
+          type: integer

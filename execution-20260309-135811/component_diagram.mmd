@@ -1,0 +1,13 @@
+graph TD
+  BankingApp[Banking Web Application]
+  YouthAccountAPI[Youth Account API]
+  AccountService[Account Service]
+  PaymentService[Payment Service]
+  TransactionService[Transaction Ledger Service]
+  SettingsDB[Youth Account Settings DB]
+
+  BankingApp-->|REST API|YouthAccountAPI
+  YouthAccountAPI-->|Internal API|AccountService
+  YouthAccountAPI-->|Internal API|PaymentService
+  YouthAccountAPI-->|Internal API|TransactionService
+  YouthAccountAPI-->|JDBC/SQL|SettingsDB

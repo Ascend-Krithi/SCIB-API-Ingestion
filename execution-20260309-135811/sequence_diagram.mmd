@@ -1,0 +1,36 @@
+sequenceDiagram
+  participant Parent
+  participant BankingApp
+  participant YouthAccountAPI
+  participant AccountService
+  participant PaymentService
+  participant TransactionService
+  participant SettingsDB
+
+  Parent->>BankingApp: Login & Select Youth Account
+  BankingApp->>YouthAccountAPI: GET /api/youth-accounts/{id}/dashboard
+  YouthAccountAPI->>AccountService: Fetch account details
+  YouthAccountAPI->>TransactionService: Fetch recent transactions
+  YouthAccountAPI->>SettingsDB: Fetch spending limit
+  YouthAccountAPI-->>BankingApp: Dashboard data
+  BankingApp-->>Parent: Show dashboard
+
+  Parent->>BankingApp: Initiate Fund Transfer
+  BankingApp->>YouthAccountAPI: POST /api/youth-accounts/{id}/fund-transfer
+  YouthAccountAPI->>PaymentService: Initiate transfer
+  YouthAccountAPI->>AccountService: Update balances
+  YouthAccountAPI->>TransactionService: Log transaction
+  YouthAccountAPI-->>BankingApp: Transfer result
+  BankingApp-->>Parent: Show confirmation
+
+  Parent->>BankingApp: Set Spending Limit
+  BankingApp->>YouthAccountAPI: PUT /api/youth-accounts/{id}/spending-limit
+  YouthAccountAPI->>SettingsDB: Update weekly limit
+  YouthAccountAPI-->>BankingApp: Limit update status
+  BankingApp-->>Parent: Show update confirmation
+
+  Parent->>BankingApp: View Transactions
+  BankingApp->>YouthAccountAPI: GET /api/youth-accounts/{id}/transactions
+  YouthAccountAPI->>TransactionService: Query transaction history
+  YouthAccountAPI-->>BankingApp: Transaction list
+  BankingApp-->>Parent: Show history
