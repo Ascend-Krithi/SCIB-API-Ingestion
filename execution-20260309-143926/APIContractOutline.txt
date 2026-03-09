@@ -1,0 +1,88 @@
+API Contract Outline
+
+1. GET /api/youth-accounts/{youthAccountId}/dashboard
+- Description: Retrieve consolidated youth account info
+- Request: Path param youthAccountId
+- Response:
+  {
+    "youthAccountId": "string",
+    "accountBalance": "decimal",
+    "spendingLimit": "decimal",
+    "currency": "string",
+    "recentTransactions": [
+      {
+        "transactionId": "string",
+        "date": "datetime",
+        "description": "string",
+        "amount": "decimal"
+      }
+    ]
+  }
+- Error Handling:
+  - 403 Unauthorized (OAuth/RBAC)
+  - 404 Not Found
+
+2. POST /api/youth-accounts/{youthAccountId}/fund-transfer
+- Description: Transfer funds from parent to youth account
+- Request Body:
+  {
+    "sourceAccountId": "string",
+    "transferAmount": "decimal",
+    "currency": "string"
+  }
+- Response:
+  {
+    "transferId": "string",
+    "status": "SUCCESS",
+    "updatedBalance": "decimal"
+  }
+- Error Handling:
+  - 400 Insufficient funds
+  - 400 Invalid account mapping
+  - 500 Transfer service failure
+
+3. PUT /api/youth-accounts/{youthAccountId}/spending-limit
+- Description: Configure weekly spending limit
+- Request Body:
+  {
+    "weeklyLimit": "decimal"
+  }
+- Response:
+  {
+    "youthAccountId": "string",
+    "weeklyLimit": "decimal",
+    "status": "UPDATED"
+  }
+- Error Handling:
+  - 400 Invalid value
+  - 403 Unauthorized
+
+4. GET /api/youth-accounts/{youthAccountId}/transactions
+- Description: Retrieve youth account transaction history
+- Query Params: startDate, endDate, page, pageSize
+- Response:
+  {
+    "transactions": [
+      {
+        "transactionId": "string",
+        "date": "datetime",
+        "merchant": "string",
+        "amount": "decimal",
+        "transactionType": "debit | credit"
+      }
+    ],
+    "pagination": {
+      "page": "number",
+      "pageSize": "number",
+      "totalRecords": "number"
+    }
+  }
+- Error Handling:
+  - 403 Unauthorized
+  - 404 Not Found
+
+General Error Handling:
+- All endpoints return structured error responses with code, message, and details.
+- Unauthorized access returns 403.
+- Input validation errors return 400.
+- All actions logged for auditability.
