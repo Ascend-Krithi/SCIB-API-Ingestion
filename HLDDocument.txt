@@ -1,0 +1,169 @@
+High-Level Design Document
+
+1. Introduction
+This HLD describes the solution architecture for the Youth Account Management feature, enabling parents/guardians to allocate and manage funds for their child's youth account, set spending limits, and monitor activity, as detailed in Jira SCIB-25 and related ADRs.
+
+2. System Overview
+The system provides APIs for dashboard retrieval, fund transfer, spending limit configuration, and transaction history, integrating with Account, Payment, Settings, and Transaction Ledger services. Security, compliance, performance, and traceability are ensured throughout.
+
+3. Architecture Overview
+
+---
+Mermaid Diagram (C4 Context):
+```mermaid
+C4Context
+Person(parent, "Parent/Guardian", "Manages youth account")
+Person(youth, "Youth", "Uses youth account")
+System(bankingApp, "Banking Web Application", "User interface for account management")
+System_Ext(accountService, "Account Service")
+System_Ext(paymentService, "Payment Service")
+System_Ext(transactionLedger, "Transaction Ledger Service")
+System_Ext(settingsService, "Settings Service")
+System(youthAccountAPI, "Youth Account API", "APIs for dashboard, funds, limits, activity")
+parent -> bankingApp: Uses
+bankingApp -> youthAccountAPI: Calls API endpoints
+parent -> youthAccountAPI: Authenticated API requests
+parent -> accountService: Indirect via API
+parent -> paymentService: Indirect via API
+parent -> transactionLedger: Indirect via API
+parent -> settingsService: Indirect via API
+```
+---
+
+Mermaid Diagram (C4 Container):
+```mermaid
+C4Container
+System(youthAccountAPI, "Youth Account API")
+Container(apiGateway, "API Gateway", "OAuth, RBAC, Input Validation")
+Container(dashboardController, "Dashboard Controller", "Retrieves youth dashboard")
+Container(fundTransferController, "Fund Transfer Controller", "Transfers funds")
+Container(spendingLimitController, "Spending Limit Controller", "Configures limits")
+Container(transactionsController, "Transactions Controller", "Retrieves activity")
+Container(settingsDB, "Settings DB", "Stores spending limits")
+Container(transactionDB, "Transaction DB", "Stores transactions")
+youthAccountAPI -> apiGateway: All requests
+apiGateway -> dashboardController: GET /dashboard
+apiGateway -> fundTransferController: POST /fund-transfer
+apiGateway -> spendingLimitController: PUT /spending-limit
+apiGateway -> transactionsController: GET /transactions
+spendingLimitController -> settingsDB: CRUD
+transactionsController -> transactionDB: Read
+```
+---
+
+Mermaid Diagram (C4 Deployment):
+```mermaid
+C4Deployment
+Node(webApp, "Banking Web Application")
+Node(apiServer, "API Server")
+Node(dbServer, "Database Server")
+Node(transactionService, "Transaction Service")
+Node(paymentService, "Payment Service")
+webApp -> apiServer: HTTPS
+apiServer -> dbServer: Secure DB access
+apiServer -> transactionService: API
+apiServer -> paymentService: API
+```
+---
+
+Mermaid Diagram (C4 Data Model):
+```mermaid
+classDiagram
+class YouthAccount {
+  youthAccountId: string
+  accountBalance: decimal
+  spendingLimit: decimal
+  currency: string
+}
+class Transaction {
+  transactionId: string
+  date: datetime
+  description: string
+  amount: decimal
+  merchant: string
+  transactionType: debit | credit
+}
+class Settings {
+  youthAccountId: string
+  weeklySpendingLimit: decimal
+  updatedTimestamp: datetime
+}
+YouthAccount "1" --> "*" Transaction
+YouthAccount "1" --> "1" Settings
+```
+---
+
+4. Component Design
+- Dashboard Controller: Maps to SCIB-26, retrieves account, limit, and activity.
+- Fund Transfer Controller: Maps to SCIB-27, validates ownership and balance, logs transaction.
+- Spending Limit Controller: Maps to SCIB-28, updates settings, triggers dashboard refresh.
+- Transactions Controller: Maps to SCIB-29, paginates, sorts, and authorizes activity retrieval.
+
+Traceability:
+| Component | ADR/Jira Mapping |
+|-----------|-----------------|
+| Dashboard | SCIB-26         |
+| Fund Transfer | SCIB-27     |
+| Spending Limit | SCIB-28    |
+| Transactions | SCIB-29      |
+
+5. Data Design
+- Youth Account: youthAccountId, accountBalance, spendingLimit, currency
+- Transaction: transactionId, date, merchant, amount, transactionType
+- Settings: youthAccountId, weeklySpendingLimit, updatedTimestamp
+
+6. Interface Design
+- REST APIs (see API Contract Outline)
+- OpenAPI/Swagger (see SCIB-30)
+
+7. Non-Functional Aspects
+- Security: OAuth, RBAC, input validation, audit logging
+- Compliance: GDPR, PCI-DSS, ISO 27001
+- Performance: API <500ms under normal load
+- Scalability: Horizontal scaling, stateless APIs
+- Availability: 99.99% uptime, failover
+- Reliability: Transactional integrity, retries
+- Maintainability: Modular, documented
+- Auditability: All actions logged
+- Disaster Recovery: RTO <4h, RPO <1h
+- Backup: Daily encrypted backups
+- Monitoring: Real-time metrics, alerting
+- Logging: Centralized aggregation
+- RBAC: Role-based access enforced
+
+8. Integration
+- Account Service: Balance, ownership
+- Payment Service: Fund transfer
+- Transaction Ledger: Activity, history
+- Settings Service: Spending limits
+
+9. Deployment
+- Docker containers, Kubernetes, CI/CD pipeline, API Gateway, secure DBs
+
+10. Test Strategy
+- Unit, integration, security, performance, and compliance testing
+- Automated API tests
+
+11. Cross-Cutting Concerns
+- Input validation, output filtering, RBAC, audit logging
+
+12. Implementation Strategy
+- Phase 1: Dashboard, Fund Transfer
+- Phase 2: Spending Limit, Transactions
+- Phase 3: OpenAPI/Swagger, Monitoring
+
+13. Technical Risks
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|-----------|------------|
+| Unauthorized access | High | Medium | OAuth, RBAC, audit logs |
+| API latency | Medium | Low | Caching, scaling |
+| Payment service failure | High | Low | Retries, fallback |
+| Data loss | High | Low | Backups, DR plan |
+| Compliance breach | High | Low | Regular audits, encryption |
+
+14. Technical Debt
+- Deferred OpenAPI enhancements
+- Manual test cases pending automation
+
+15. Appendices
+- ADR mappings, traceability matrix, full OpenAPI spec (see SCIB-30)
