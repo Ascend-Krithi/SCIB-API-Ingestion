@@ -1,0 +1,6 @@
+API ENDPOINTS:
+1. GET /v1/users - Returns list of users
+2. POST /v1/orders - Creates a new order
+
+AUTH: Bearer Token required for all write operations.
+RATE LIMIT: 100 req/min.

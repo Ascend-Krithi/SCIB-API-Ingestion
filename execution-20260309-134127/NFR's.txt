@@ -1,0 +1,5 @@
+NON-FUNCTIONAL REQUIREMENTS:
+- Scalability: System must support 10k concurrent users.
+- Availability: 99.9% uptime (SLA).
+- Security: AES-256 encryption at rest.
+- Latency: P95 response time < 200ms.
