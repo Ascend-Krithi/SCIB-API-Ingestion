@@ -1,0 +1,62 @@
+Non-Functional Requirements (NFRs) List
+
+Security:
+- OAuth token validation for all APIs
+- RBAC enforced: parent can manage only their youth accounts
+- Input validation and output filtering for API endpoints
+- Audit logging for all fund transfers, spending limit changes, and account access
+- Data encryption at rest and in transit
+
+Compliance:
+- GDPR: Data subject rights, data minimization, consent
+- PCI-DSS: Secure fund transfer, card data protection
+- ISO 27001: Information security controls
+
+Performance:
+- Dashboard API response < 500ms under normal load
+- Fund transfer API response < 700ms
+- Spending limit update < 400ms
+- Transaction history API supports pagination, max 1000 records/page
+
+Scalability:
+- APIs horizontally scalable (stateless)
+- DB sharding/partitioning for large datasets
+
+Availability:
+- 99.99% uptime (HA, failover)
+
+Reliability:
+- Automatic failover and retry logic for integrations
+- Transactional guarantees on fund transfer
+
+Maintainability:
+- Modular codebase, clear documentation
+- API versioning
+
+Auditability:
+- All API actions logged, searchable
+- Audit logs retained 2 years
+
+Disaster Recovery:
+- RTO < 4 hours
+- RPO < 1 hour
+
+Backup:
+- Daily backups, encrypted, stored offsite
+
+Monitoring:
+- Real-time metrics (API latency, errors, throughput)
+- Alerting for failures, anomalies
+
+Logging:
+- Centralized log aggregation (ELK/Splunk)
+- Log rotation, retention policy
+
+RBAC:
+- Role-based access enforced in all APIs
+- Parent can view/manage only their youth accounts
+
+Other:
+- API contract validation (OpenAPI/Swagger)
+- Compliance test automation
+- Data retention policy: youth account data retained 7 years
